@@ -2,6 +2,13 @@ const { Contract, Web3 } = require('web3');
 const moment = require('moment-timezone');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
+require('dotenv').config();
+const TelegramBot = require('node-telegram-bot-api');
+
+const TOKEN = process.env.TOKEN;
+const bot = new TelegramBot(TOKEN, { polling: true });
+bot.sendMessage('@chaisiye111', '这是从Node.js发送的消息！');
+
 const web3 = new Web3('wss://mainnet.infura.io/ws/v3/6e6a3c3e676b4ab1ad7a7126b70169e9');
 const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 const UNISWAP_ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
