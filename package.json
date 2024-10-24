@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "ethers": "^6.13.4",
+    "moment-timezone": "^0.5.46",
+    "sqlite3": "^5.1.7",
+    "web3": "^4.13.0"
+  }
+}
