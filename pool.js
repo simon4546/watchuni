@@ -35,18 +35,20 @@ async function handleNewBlock(blockHeader) {
     const block = await web3.eth.getBlock(blockHeader.number, true);
     block.transactions.forEach((tx) => {
         if (tx.to && tx.to.toLowerCase() == '0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD'.toLowerCase()) {
-            web3.eth.getCode(tx.to).then((message) => {
-                let isContract = message
-                if (isContract != "0x") {
-                    console.log("-----------------------------------------------------")
-                    // console.log(`Incoming swap transaction: ${tx.hash}`);
-                    // console.log(`From: ${tx.from},From: ${tx.to} transaction: ${tx.hash}`);
-                    handleRouter(tx)
-                    // console.log("-----------------------------------------------------")
-                }
-                // console.log(message);	// 성공(resolve)한 경우 실행
-            })
-
+            let value = web3.utils.fromWei(tx.value, "ether")
+            if (value > 0.3) {
+                web3.eth.getCode(tx.to).then((message) => {
+                    let isContract = message
+                    if (isContract != "0x") {
+                        console.log("-----------------------------------------------------")
+                        // console.log(`Incoming swap transaction: ${tx.hash}`);
+                        // console.log(`From: ${tx.from},From: ${tx.to} transaction: ${tx.hash}`);
+                        handleRouter(tx)
+                        // console.log("-----------------------------------------------------")
+                    }
+                    // console.log(message);	// 성공(resolve)한 경우 실행
+                })
+            }
         }
     })
 }
@@ -57,11 +59,11 @@ async function handleRouter(tx) {
     let coin = tx.input.substring(1378, 1418)
     if (method == '0b080604') {
         let value = web3.utils.fromWei(tx.value, "ether")
-        let address=`0x${coin}`
+        let address = `0x${coin}`
         const erc20 = new web3.eth.Contract(ERC20_ABI, address);
         const tokenName = await erc20.methods.symbol().call()
-        console.log(tokenName,address)
-        await processSwapEvent(tx.hash,tx.from,address,tokenName,0,value)
+        console.log(tokenName, address)
+        await processSwapEvent(tx.hash, tx.from, address, tokenName, 0, value)
     }
 }
 subscribeToNewBlocks();
